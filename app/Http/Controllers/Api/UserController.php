@@ -17,29 +17,28 @@ class UserController extends Controller
     */
     public function register(Request $request)
         {
-        
-        try {
-        
-            $user = User::create([
+        try{
+           $user = User::create([
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
                 'password' => Hash::make($request->get('password')),
             ]);
-         }
-         catch(\Illuminate\Database\QueryException $e) {
-                return response()->json(['duplicate user'], 500);
-           }
-           // Immediately login the user
-      	 $token = auth()->login($user);
+         // Immediately login the user
+      	$token = auth()->login($user);   
+      	}   	
+      	catch(\Illuminate\Database\QueryException $e){
+      		 return response()->json(['success' => 0,
+                                   'message' => 'User already exist.Please try again'], 500);
+      	}
       	return $this->respondWithToken($token);
         }
         
         /**
-        * Retrieves an Authenticate user
+        * Retrieves an Authenticated user
         */
          public function getAuthUser(Request $request) {
     		try {
-    			 if (! $user = JWTAuth::parseToken()->authenticate()) {
+    			 if (!$user = JWTAuth::parseToken()->authenticate()) {
           			  return response()->json(['user_not_found'], 404);
            		}
 
