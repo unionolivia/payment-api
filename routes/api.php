@@ -19,4 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('register', 'Api\UserController@register');
+Route::post('transfer', 'Api\PaymentController@initiatingTransfer');
+Route::post('final-transfer', 'Api\PaymentController@finalTransfer');
 Route::post('login', 'Api\UserController@login');
