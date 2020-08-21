@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\User;
 use JWTAuth;
+use App\Services\CreateUser;
+use App\Http\Requests\CreateUserRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
@@ -15,22 +17,13 @@ class UserController extends Controller
     /*
     *	Register a User
     */
-    public function register(Request $request)
-        {
-        try{
-           $user = User::create([
-                'name' => $request->get('name'),
-                'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password')),
-            ]);
-         // Immediately login the user
-      	$token = auth()->login($user);   
-      	}   	
-      	catch(\Illuminate\Database\QueryException $e){
-      		 return response()->json(['success' => 0,
-                                   'message' => 'User already exist.Please try again'], 500);
-      	}
-      	return $this->respondWithToken($token);
+    public function register(CreateUserRequest $request, CreateUser $action)
+        {         
+          $user = $action->execute($request->validated());
+          
+           // Immediately login the user
+      	  $token = auth()->login($user); 
+      	 return $this->respondWithToken($token);
         }
         
         /**

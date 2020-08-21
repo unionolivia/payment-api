@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
+use Exception;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use App\Exceptions\OneException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -14,7 +18,8 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
+        HttpException::class,
+        OneException::class
     ];
 
     /**
@@ -51,12 +56,39 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-    	if ($exception instanceof MethodNotAllowedHttpException)
-       { 
-          return response()->json(['success' => 0,
-                                   'message' => $exception->getMessage()], 405);
-       }
-
-        return parent::render($request, $exception);
+        return $this->handle($request, $exception);
     }
+    
+    /*
+    *
+    */
+    public function handle($request, Throwable $exception){
+
+        if($exception instanceOf OneException){
+            $data = $exception->toArray();
+            $status = $exception->getStatus();
+        }
+
+        if ($exception instanceOf NotFoundHttpException) {
+            $data = array_merge([
+                'id'     => 'not_found',
+                'status' => '404'
+            ], config('errors.not_found'));
+
+            $status = 404;
+        }
+
+        if ($exception instanceOf MethodNotAllowedHttpException)
+       { 
+           $data = array_merge([
+               'id' => 'method_not_allowed',
+               'status' => '405'
+           ], config('errors.method_not_allowed'));
+
+           $status = 405;
+        }
+
+        return response()->json($data, $status);
+    }
+
 }
