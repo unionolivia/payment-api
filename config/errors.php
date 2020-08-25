@@ -19,8 +19,8 @@ return [
 	],
 
 	'internal_server_error' => [
-		'title' => 'The email already exist. hence, the server declined the request',
-		'detail' => 'One of your request input had an error. Please try again.'
+		'title' => 'Something went wrong. hence, the server declined the request',
+		'detail' => 'We will look into it'
 	],
 
 	'not_found' => [  
@@ -36,6 +36,33 @@ return [
 	'method_not_allowed' => [
 		'title' => 'The server decided to reject the specific HTTP method used.',
 		'detail' => 'Your request did not satify the servers HTTP method'
-	]	
+	],
+
+	'unauthorized' => [
+		'title' => 'Invalid auth (bad email/password)',
+		'detail' => 'Either you need to provide authentication credentials, or the credentials provided are not valid.'
+	],
+
+	'token_expired' => [
+		'title' => 'Token has Expired',
+		'detail' => 'Token has expired due inactivity. Re-login to continue'
+	],
+
+	'token_invalid' => [
+		'title' => 'Token is Invalid',
+		'detail' => 'The token may have been manipulated, hence the server refuse to recognise the user. Try login again'
+	],
+
+	'token_absent' => [
+		'title' => 'lol3',
+		'detail' => 'lol3'
+	],
+
+	'user_not_found' => [
+		'title' => 'We are unable to find this account',
+		'detail' => 'Either you need to provide authentication credentials, or the credentials provided are not valid.'
+	],
+
+	
 
 ];  

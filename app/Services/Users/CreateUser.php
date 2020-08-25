@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Hash;
 use App\Exceptions\DuplicateEmailException;
 use App\User;
-
+use App\Helpers\JwtHelper;
 
 
 class CreateUser
@@ -27,7 +27,9 @@ class CreateUser
 
         $user->save();
 
-        return $user;
+        $token =  auth()->login($user); 
+
+        return JwtHelper::respondWithToken($token);
 
 
     }

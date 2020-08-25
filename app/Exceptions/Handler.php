@@ -69,7 +69,7 @@ class Handler extends ExceptionHandler
             $status = $exception->getStatus();
         }
 
-        if ($exception instanceOf NotFoundHttpException) {
+        elseif ($exception instanceOf NotFoundHttpException) {
             $data = array_merge([
                 'id'     => 'not_found',
                 'status' => '404'
@@ -78,7 +78,7 @@ class Handler extends ExceptionHandler
             $status = 404;
         }
 
-        if ($exception instanceOf MethodNotAllowedHttpException)
+        elseif ($exception instanceOf MethodNotAllowedHttpException)
        { 
            $data = array_merge([
                'id' => 'method_not_allowed',
@@ -87,6 +87,54 @@ class Handler extends ExceptionHandler
 
            $status = 405;
         }
+
+       elseif ($exception instanceOf \Tymon\JWTAuth\Exceptions\TokenExpiredException)
+       { 
+           $data = array_merge([
+               'id' => 'token_expired',
+               'status' => '404'
+           ], config('errors.token_expired'));
+
+           $status = 404;
+        }
+
+       elseif ($exception instanceOf \Tymon\JWTAuth\Exceptions\TokenInvalidException)
+        { 
+            $data = array_merge([
+                'id' => 'token_invalid',
+                'status' => '404'
+            ], config('errors.token_invalid'));
+ 
+            $status = 404;
+         }
+
+         elseif ($exception instanceOf \Tymon\JWTAuth\Exceptions\JWTException )
+        { 
+            $data = array_merge([
+                'id' => 'token_absent',
+                'status' => '500'
+            ], config('errors.token_absent'));
+ 
+            $status = 500;
+         }
+
+        elseif ($exception instanceOf \Tymon\JWTAuth\Exceptions\UserNotDefinedException)
+         { 
+             $data = array_merge([
+                 'id' => 'user_not_found',
+                 'status' => '404'
+             ], config('errors.user_not_found'));
+  
+             $status = '404';
+          }
+          else{
+            $data = array_merge([
+                'id' => 'internal_server_error',
+                'status' => '500'
+            ], config('errors.internal_server_error'));
+ 
+            $status = '500';
+          }
 
         return response()->json($data, $status);
     }
